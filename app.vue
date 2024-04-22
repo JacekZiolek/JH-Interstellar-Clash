@@ -1,12 +1,10 @@
 <script lang="ts" setup>
-import { getFirestore, collection } from 'firebase/firestore'
-// init services
-const db = getFirestore()
+import { collection, doc } from 'firebase/firestore'
 
-// collection ref
-const testRef = collection(db, 'test')
+const db = useFirestore()
+const someTest = useDocument(doc(collection(db, 'test'), 'bAxbVatnWwBMqYFpFPrW'))
 
-onMounted(() => console.log('app', testRef))
+onMounted(() => console.log('app', someTest.value?.test))
 </script>
 
 <template>
