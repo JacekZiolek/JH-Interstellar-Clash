@@ -21,7 +21,9 @@ export default defineNuxtConfig({
   },
   eslint: {
     config: {
-      stylistic: true,
+      stylistic: {
+        braceStyle: '1tbs',
+      },
     },
   },
   vite: {
