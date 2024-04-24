@@ -22,6 +22,7 @@ export default withNuxt(
         singleline: 'ignore',
         multiline: 'below',
       }],
+      'vue/no-v-text-v-html-on-component': 'off',
       // These rules are targeted at Vue.js 3.x.
       'vue/no-v-for-template-key': 'off',
       'vue/no-v-for-template-key-on-child': ['error'],

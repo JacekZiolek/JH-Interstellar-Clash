@@ -1,36 +1,66 @@
 <script lang="ts" setup>
-import { collection, doc } from 'firebase/firestore'
+import { signOut } from 'firebase/auth'
 
-const db = useFirestore()
-const someTest = useDocument(doc(collection(db, 'test'), 'bAxbVatnWwBMqYFpFPrW'))
+const getCurrentYear = computed(() => new Date().getFullYear())
 
-onMounted(() => console.log('app', someTest.value?.test))
+const user = useCurrentUser()
+const userPhotoUrl = computed(() => {
+  return user.value?.photoURL || undefined
+})
+const auth = useFirebaseAuth()!
 </script>
 
 <template>
   <v-app>
-    <v-app-bar color="grey-lighten-2">
-      <template #prepend>
-        <v-app-bar-nav-icon></v-app-bar-nav-icon>
+    <v-app-bar color="indigo-lighten-1">
+      <v-app-bar-title>
+        <NuxtLink :to="{ name: 'index' }">
+          <v-btn class="mr-2" variant="flat" density="compact" color="red-darken-4">Home</v-btn>
+        </NuxtLink>
+        <NuxtLink :to="{ name: 'index' }">
+          <v-btn class="mr-2" variant="flat" density="compact" color="red-darken-4">New Game</v-btn>
+        </NuxtLink>
+        <NuxtLink :to="{ name: 'index' }">
+          <v-btn variant="flat" density="compact" color="red-darken-4">High Scores</v-btn>
+        </NuxtLink>
+      </v-app-bar-title>
+      <template v-if="user" #append>
+        <v-avatar class="mr-8" icon="mdi-account-circle" :image="userPhotoUrl" variant="outlined"></v-avatar>
+        <v-menu activator="parent">
+          <v-list>
+            <v-list-item>
+              <NuxtLink :to="{ name: 'index' }">
+                <v-btn>Account</v-btn>
+              </NuxtLink>
+            </v-list-item>
+            <v-list-item>
+              <v-btn @click="signOut(auth)">sign out</v-btn>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </template>
-      <v-app-bar-title>Photos</v-app-bar-title>
-      <template #append>
-        <v-btn icon="mdi-dots-vertical"></v-btn>
+      <template v-else #append>
+        <NuxtLink :to="{ name: 'login' }">
+          <v-btn class="mr-2" variant="elevated" density="comfortable" color="purple-darken-3">Log In</v-btn>
+        </NuxtLink>
+        <NuxtLink :to="{ name: 'signup' }">
+          <v-btn variant="elevated" color="purple-darken-4">Sign Up</v-btn>
+        </NuxtLink>
       </template>
     </v-app-bar>
     <v-main class="app-container">
       <NuxtPage />
     </v-main>
-    <v-footer app>
+    <v-footer color="indigo-lighten-1" app>
       <v-row align="center" no-gutters>
         <v-col cols="auto">
           <p class="text-no-wrap">
-            {{ new Date().getFullYear() }} — <strong>Jack Herby</strong>
+            {{ getCurrentYear }} — <strong>Jack Herby</strong>
           </p>
         </v-col>
         <v-col cols="auto" class="pl-4">
-          <v-btn icon="mdi-github" class="mr-2" variant="text" />
-          <v-btn icon="mdi-linkedin" variant="text" />
+          <v-btn href="https://github.com/JackHerby" icon="mdi-github" class="mr-2" variant="outlined"></v-btn>
+          <v-btn href="https://www.linkedin.com/in/jacekziolek/" icon="mdi-linkedin" variant="outlined"></v-btn>
         </v-col>
         <v-spacer></v-spacer>
       </v-row>
