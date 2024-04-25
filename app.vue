@@ -17,10 +17,7 @@ const auth = useFirebaseAuth()!
         <NuxtLink :to="{ name: 'index' }">
           <v-btn class="mr-2" variant="flat" density="compact" color="red-darken-4">Home</v-btn>
         </NuxtLink>
-        <NuxtLink :to="{ name: 'index' }">
-          <v-btn class="mr-2" variant="flat" density="compact" color="red-darken-4">New Game</v-btn>
-        </NuxtLink>
-        <NuxtLink :to="{ name: 'index' }">
+        <NuxtLink :to="{ name: 'high-scores' }">
           <v-btn variant="flat" density="compact" color="red-darken-4">High Scores</v-btn>
         </NuxtLink>
       </v-app-bar-title>
