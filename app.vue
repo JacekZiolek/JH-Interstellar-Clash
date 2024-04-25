@@ -22,7 +22,8 @@ const auth = useFirebaseAuth()!
         </NuxtLink>
       </v-app-bar-title>
       <template v-if="user" #append>
-        <v-avatar class="mr-8" icon="mdi-account-circle" :image="userPhotoUrl" variant="outlined"></v-avatar>
+        <span class="mr-2">Your account: </span>
+        <v-avatar class="mr-8" icon="mdi-account-circle" :image="userPhotoUrl" variant="plain"></v-avatar>
         <v-menu activator="parent">
           <v-list>
             <v-list-item>
@@ -56,8 +57,8 @@ const auth = useFirebaseAuth()!
           </p>
         </v-col>
         <v-col cols="auto" class="pl-4">
-          <v-btn href="https://github.com/JackHerby" icon="mdi-github" class="mr-2" variant="outlined"></v-btn>
-          <v-btn href="https://www.linkedin.com/in/jacekziolek/" icon="mdi-linkedin" variant="outlined"></v-btn>
+          <v-btn href="https://github.com/JackHerby" icon="mdi-github" class="mr-2" variant="plain"></v-btn>
+          <v-btn href="https://www.linkedin.com/in/jacekziolek/" icon="mdi-linkedin" variant="plain"></v-btn>
         </v-col>
         <v-spacer></v-spacer>
       </v-row>
