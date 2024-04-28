@@ -81,7 +81,7 @@ const handleStepChange = (): void => {
 <template>
   <div>
     <h4 class="text-h4 text-center my-8">Sign Up</h4>
-    <v-card class="mx-auto" max-width="500">
+    <v-card class="mx-auto" max-width="500" variant="tonal" color="amber-darken-3">
       <v-card-title class="text-h6 font-weight-regular justify-space-between">
         <span>{{ currentTitle }}</span>
       </v-card-title>
