@@ -28,7 +28,7 @@ const auth = useFirebaseAuth()!
               <v-divider></v-divider>
               <v-list-item>
                 <NuxtLink class="text-decoration-none" :to="{ name: 'high-scores' }">
-                  <v-list-item-tile>High Scores</v-list-item-tile>
+                  <v-list-item-title>High Scores</v-list-item-title>
                 </NuxtLink>
               </v-list-item>
             </v-list>
@@ -72,7 +72,7 @@ const auth = useFirebaseAuth()!
       <NuxtPage />
     </v-main>
     <v-footer class="d-flex justify-center align-items-center pa-0" app>
-      <p class="text-no-wrap">
+      <p class="text-no-wrap mr-4">
         {{ getCurrentYear }} — <strong>Jack Herby</strong>
       </p>
       <v-btn href="https://github.com/JackHerby" icon="mdi-github" class="mr-2" variant="plain"></v-btn>
