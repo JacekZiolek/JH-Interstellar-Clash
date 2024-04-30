@@ -11,9 +11,31 @@ const auth = useFirebaseAuth()!
 </script>
 
 <template>
-  <v-app>
-    <v-app-bar color="indigo-lighten-1">
-      <v-app-bar-title>
+  <v-app full-height>
+    <v-app-bar color="blue-grey-darken-3">
+      <template #prepend>
+        <div class="d-block d-sm-none">
+          <v-menu>
+            <template #activator="{ props }">
+              <v-app-bar-nav-icon v-bind="props"></v-app-bar-nav-icon>
+            </template>
+            <v-list>
+              <v-list-item>
+                <NuxtLink class="text-decoration-none" :to="{ name: 'index' }">
+                  <v-list-item-title>Home</v-list-item-title>
+                </NuxtLink>
+              </v-list-item>
+              <v-divider></v-divider>
+              <v-list-item>
+                <NuxtLink class="text-decoration-none" :to="{ name: 'high-scores' }">
+                  <v-list-item-title>High Scores</v-list-item-title>
+                </NuxtLink>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
+      </template>
+      <v-app-bar-title class="d-none d-sm-block">
         <NuxtLink :to="{ name: 'index' }">
           <v-btn class="mr-2" variant="flat" density="compact" color="red-darken-4">Home</v-btn>
         </NuxtLink>
@@ -49,27 +71,20 @@ const auth = useFirebaseAuth()!
     <v-main class="app-container">
       <NuxtPage />
     </v-main>
-    <v-footer color="indigo-lighten-1" app>
-      <v-row align="center" no-gutters>
-        <v-col cols="auto">
-          <p class="text-no-wrap">
-            {{ getCurrentYear }} — <strong>Jack Herby</strong>
-          </p>
-        </v-col>
-        <v-col cols="auto" class="pl-4">
-          <v-btn href="https://github.com/JackHerby" icon="mdi-github" class="mr-2" variant="plain"></v-btn>
-          <v-btn href="https://www.linkedin.com/in/jacekziolek/" icon="mdi-linkedin" variant="plain"></v-btn>
-        </v-col>
-        <v-spacer></v-spacer>
-      </v-row>
+    <v-footer class="d-flex justify-center align-items-center pa-0" app>
+      <p class="text-no-wrap mr-4">
+        {{ getCurrentYear }} — <strong>Jack Herby</strong>
+      </p>
+      <v-btn href="https://github.com/JackHerby" icon="mdi-github" class="mr-2" variant="plain"></v-btn>
+      <v-btn href="https://www.linkedin.com/in/jacekziolek/" icon="mdi-linkedin" variant="plain"></v-btn>
     </v-footer>
   </v-app>
 </template>
 
 <style scoped>
 .app-container {
-  background-image: url('./public/space_battle.jpg');
-  background-position: center;
+  background-image: url('./public/spaceship.jpg');
+  background-position: bottom;
   background-repeat: no-repeat;
   background-size: cover;
 }
