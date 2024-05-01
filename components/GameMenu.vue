@@ -1,21 +1,17 @@
 <script lang="ts" setup>
 import { EGameMode } from '@/enums/EGameMode'
 
-const emit = defineEmits<{
-  (e: 'startNewGame', value: EGameMode): void
-}>()
-
 const form = ref()
 
 const playerOne = usePlayerOne()
 const playerTwo = usePlayerTwo()
-
-const gameMode = ref<EGameMode>(EGameMode.onePlayer)
+const gameMode = useGameMode()
+const isGameRunning = useGameRunning()
 
 const startNewGame = () => {
   form.value.validate()
   if (form.value.isValid) {
-    emit('startNewGame', gameMode.value)
+    isGameRunning.value = true
   }
 }
 </script>
