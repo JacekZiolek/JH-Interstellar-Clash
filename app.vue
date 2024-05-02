@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import { signOut } from 'firebase/auth'
+import { initializeApp } from 'firebase/app'
+
+initializeApp()
 
 const getCurrentYear = computed(() => new Date().getFullYear())
 
