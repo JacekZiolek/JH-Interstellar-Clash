@@ -142,7 +142,9 @@ onMounted(() => {
                   <v-card-title>Name: {{ playerOneCard.name }}</v-card-title>
                   <v-card-text>Description: {{ playerOneCard.description }}</v-card-text>
                   <v-card-text>Weapon: {{ playerOneCard.weapon }}</v-card-text>
-                  <v-card-text class="text-h6">Resource: {{ playerOneCard.resource.type }} - {{ playerOneCard.resource.value }}</v-card-text>
+                  <v-card-text class="text-h6">
+                    Resource: {{ playerOneCard.resource.type }} - {{ playerOneCard.resource.value }}
+                  </v-card-text>
                 </v-card>
               </v-col>
               <v-col>
