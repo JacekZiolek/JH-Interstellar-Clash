@@ -97,7 +97,7 @@ const handleSignIn = async (authMethod: EAuthMethod): Promise<void> => {
           <v-btn
             class="mb-2"
             size="large"
-            variant="outlined"
+            variant="flat"
             block
             :loading="isLoading"
             :disabled="isLoading"
@@ -108,7 +108,7 @@ const handleSignIn = async (authMethod: EAuthMethod): Promise<void> => {
           <v-btn
             class="mb-8"
             size="large"
-            variant="outlined"
+            variant="flat"
             block
             :loading="isLoading"
             :disabled="isLoading"

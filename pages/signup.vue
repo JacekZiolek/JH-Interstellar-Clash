@@ -131,7 +131,7 @@ const handleStepChange = (): void => {
           <v-card-actions>
             <v-btn
               v-if="step === EStep.password || step === EStep.success"
-              variant="text"
+              variant="flat"
               :loading="isLoading"
               :disabled="isLoading"
               @click="step--"
@@ -141,7 +141,7 @@ const handleStepChange = (): void => {
             <v-spacer></v-spacer>
             <v-btn
               v-if="step == EStep.email || step === EStep.password"
-              color="primary"
+              color="purple-darken-3"
               variant="flat"
               :loading="isLoading"
               :disabled="isLoading"
