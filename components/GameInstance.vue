@@ -137,7 +137,7 @@ onMounted(() => {
             </v-row>
             <v-row>
               <v-col>
-                <v-card height="500">
+                <v-card height="600">
                   <v-img src="../public/battle.jpg" height="200" cover></v-img>
                   <v-card-title>Name: {{ playerOneCard.name }}</v-card-title>
                   <v-card-text>Description: {{ playerOneCard.description }}</v-card-text>
@@ -148,7 +148,7 @@ onMounted(() => {
                 </v-card>
               </v-col>
               <v-col>
-                <v-card height="500">
+                <v-card height="600">
                   <v-img src="../public/battle.jpg" height="200" cover></v-img>
                   <v-card-title>Name: {{ playerTwoCard.name }}</v-card-title>
                   <v-card-text>Description: {{ playerTwoCard.description }}</v-card-text>
