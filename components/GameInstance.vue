@@ -11,6 +11,7 @@ const peopleRef = collection(db, 'people')
 const starshipsRef = collection(db, 'starships')
 const peopleDeck = useCollection<ICard>(query(peopleRef))
 const starshipsDeck = useCollection<ICard>(query(starshipsRef))
+onMounted(() => console.log(peopleDeck.value, starshipsDeck.value))
 
 const playerOne = usePlayerOne()
 const playerTwo = usePlayerTwo()
@@ -42,7 +43,12 @@ let playerTwoCard = reactive<ICard>({
   },
 })
 
-const getDeck = computed(() => deckType.value === 'people' ? peopleDeck.value : starshipsDeck.value)
+const getDeck = computed(() => {
+  if (!peopleDeck.value || !starshipsDeck.value) {
+    return
+  }
+  return deckType.value === 'people' ? peopleDeck.value : starshipsDeck.value
+})
 
 // Fisher–Yates shuffle algorithm
 const shuffleDeck = (deckToShuffle: ICard[]): ICard[] => {
@@ -55,7 +61,10 @@ const shuffleDeck = (deckToShuffle: ICard[]): ICard[] => {
   return deckToShuffle
 }
 
-const playGame = (deck: ICard[]): void => {
+const playGame = (deck: ICard[] | undefined): void => {
+  if (!deck) {
+    return
+  }
   const shuffledDeck = shuffleDeck(deck)
   playerOneCard = shuffledDeck[0]
   playerTwoCard = shuffledDeck[1]
