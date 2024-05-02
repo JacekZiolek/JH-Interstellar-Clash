@@ -19,9 +19,6 @@ export default defineNuxtConfig({
     firebase: {
       gen: 2,
       nodeVersion: '20',
-      httpsOptions: {
-        region: 'eur3',
-      },
     },
   },
   eslint: {
