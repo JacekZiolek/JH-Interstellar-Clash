@@ -22,15 +22,16 @@ const googleAuthProvider = new GoogleAuthProvider()
 const auth = useFirebaseAuth()!
 
 const handleSignIn = async (authMethod: EAuthMethod): Promise<void> => {
-  form.value.validate()
-  if (!form.value.isValid) {
-    return
+  if (authMethod === EAuthMethod.emailAndPassword) {
+    form.value.validate()
   }
   isLoading.value = true
   try {
     switch (authMethod) {
       case EAuthMethod.emailAndPassword:
-        await signInWithEmailAndPassword(auth, email.value, password.value)
+        if (form.value.isValid) {
+          await signInWithEmailAndPassword(auth, email.value, password.value)
+        }
         break
       case EAuthMethod.popUp:
         await signInWithPopup(auth, googleAuthProvider)
