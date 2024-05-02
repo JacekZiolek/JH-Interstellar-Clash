@@ -11,7 +11,6 @@ const peopleRef = collection(db, 'people')
 const starshipsRef = collection(db, 'starships')
 const peopleDeck = useCollection<ICard>(query(peopleRef))
 const starshipsDeck = useCollection<ICard>(query(starshipsRef))
-onMounted(() => console.log(peopleDeck.value, starshipsDeck.value))
 
 const playerOne = usePlayerOne()
 const playerTwo = usePlayerTwo()
