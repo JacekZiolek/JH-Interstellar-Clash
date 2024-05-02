@@ -42,7 +42,12 @@ let playerTwoCard = reactive<ICard>({
   },
 })
 
-const getDeck = computed(() => deckType.value === 'people' ? peopleDeck.value : starshipsDeck.value)
+const getDeck = computed(() => {
+  if (!peopleDeck.value || !starshipsDeck.value) {
+    return
+  }
+  return deckType.value === 'people' ? peopleDeck.value : starshipsDeck.value
+})
 
 // Fisher–Yates shuffle algorithm
 const shuffleDeck = (deckToShuffle: ICard[]): ICard[] => {
@@ -55,7 +60,10 @@ const shuffleDeck = (deckToShuffle: ICard[]): ICard[] => {
   return deckToShuffle
 }
 
-const playGame = (deck: ICard[]): void => {
+const playGame = (deck: ICard[] | undefined): void => {
+  if (!deck) {
+    return
+  }
   const shuffledDeck = shuffleDeck(deck)
   playerOneCard = shuffledDeck[0]
   playerTwoCard = shuffledDeck[1]
@@ -137,16 +145,18 @@ onMounted(() => {
             </v-row>
             <v-row>
               <v-col>
-                <v-card height="500">
+                <v-card height="600">
                   <v-img src="../public/battle.jpg" height="200" cover></v-img>
                   <v-card-title>Name: {{ playerOneCard.name }}</v-card-title>
                   <v-card-text>Description: {{ playerOneCard.description }}</v-card-text>
                   <v-card-text>Weapon: {{ playerOneCard.weapon }}</v-card-text>
-                  <v-card-text class="text-h6">Resource: {{ playerOneCard.resource.type }} - {{ playerOneCard.resource.value }}</v-card-text>
+                  <v-card-text class="text-h6">
+                    Resource: {{ playerOneCard.resource.type }} - {{ playerOneCard.resource.value }}
+                  </v-card-text>
                 </v-card>
               </v-col>
               <v-col>
-                <v-card height="500">
+                <v-card height="600">
                   <v-img src="../public/battle.jpg" height="200" cover></v-img>
                   <v-card-title>Name: {{ playerTwoCard.name }}</v-card-title>
                   <v-card-text>Description: {{ playerTwoCard.description }}</v-card-text>

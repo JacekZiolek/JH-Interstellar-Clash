@@ -5,13 +5,21 @@ import { EStep } from '@/enums/EStep'
 definePageMeta({
   middleware: 'auth',
 })
-const router = useRouter()
 
 const isLoading = ref(false)
 const isPasswordVisible = ref(false)
 const isConfirmPasswordVisible = ref(false)
-
 const step = ref<EStep>(EStep.email)
+
+const snackbar = ref(false)
+const timeout = ref(2000)
+const message = ref('')
+
+const emailForm = ref()
+const passwordForm = ref()
+const email = ref('')
+const password = ref('')
+const confirmPassword = ref('')
 
 const currentTitle = computed(() => {
   switch (step.value) {
@@ -21,14 +29,6 @@ const currentTitle = computed(() => {
   }
 })
 const nextStepBtnText = computed(() => step.value === EStep.password ? 'Create Account' : 'Next')
-
-const snackbar = ref(false)
-const timeout = ref(2000)
-const message = ref('')
-
-const email = ref('')
-const password = ref('')
-const confirmPassword = ref('')
 
 const auth = useFirebaseAuth()!
 const handleCreateUser = async (): Promise<void> => {
@@ -46,26 +46,21 @@ const handleCreateUser = async (): Promise<void> => {
     }
   } finally {
     isLoading.value = false
-    router.push({ name: 'index' })
   }
 }
 const handleStepChange = (): void => {
   switch (step.value) {
     case EStep.email:
-      step.value = EStep.password
+      emailForm.value.validate()
+      if (emailForm.value.isValid) {
+        step.value = EStep.password
+      }
       break
     case EStep.password:
-      if (!password.value.length) {
-        message.value = 'Password is required'
-        snackbar.value = true
-        break
+      passwordForm.value.validate()
+      if (passwordForm.value.isValid) {
+        handleCreateUser()
       }
-      if (password.value !== confirmPassword.value) {
-        message.value = 'Passwords do no not match!'
-        snackbar.value = true
-        break
-      }
-      handleCreateUser()
       break
     default:
       step.value = EStep.email
@@ -85,38 +80,47 @@ const handleStepChange = (): void => {
           </v-card-title>
           <v-window v-model="step">
             <v-window-item :value="EStep.email">
-              <v-card-text>
-                <v-text-field
-                  v-model="email"
-                  label="Email"
-                  placeholder="john@google.com"
-                  prepend-inner-icon="mdi-email-outline"
-                ></v-text-field>
-                <span class="text-caption text-grey-darken-1">
-                  This is the email you will use to login to your Interstellar Clash account
-                </span>
-              </v-card-text>
+              <v-form ref="emailForm">
+                <v-card-text>
+                  <v-text-field
+                    v-model="email"
+                    :rules="[v => !!v || `E-mail is required`]"
+                    label="Email"
+                    placeholder="john@google.com"
+                    prepend-inner-icon="mdi-email-outline"
+                  ></v-text-field>
+                  <span class="text-caption text-grey-darken-1">
+                    This is the email you will use to login to your Interstellar Clash account
+                  </span>
+                </v-card-text>
+              </v-form>
             </v-window-item>
             <v-window-item :value="EStep.password">
-              <v-card-text>
-                <v-text-field
-                  v-model="password"
-                  label="Password"
-                  :append-inner-icon="isPasswordVisible ? 'mdi-eye-off' : 'mdi-eye'"
-                  :type="isPasswordVisible ? 'text' : 'password'"
-                  @click:append-inner="isPasswordVisible = !isPasswordVisible"
-                ></v-text-field>
-                <v-text-field
-                  v-model="confirmPassword"
-                  label="Confirm Password"
-                  :append-inner-icon="isConfirmPasswordVisible ? 'mdi-eye-off' : 'mdi-eye'"
-                  :type="isConfirmPasswordVisible ? 'text' : 'password'"
-                  @click:append-inner="isConfirmPasswordVisible = !isConfirmPasswordVisible"
-                ></v-text-field>
-                <span class="text-caption text-grey-darken-1">
-                  Please enter a password for your account
-                </span>
-              </v-card-text>
+              <v-form ref="passwordForm">
+                <v-card-text>
+                  <v-text-field
+                    v-model="password"
+                    label="Password"
+                    :rules="[v => !!v && password === confirmPassword || 'Password is required and passwords must match']"
+                    :append-inner-icon="isPasswordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                    :type="isPasswordVisible ? 'text' : 'password'"
+                    @click:append-inner="isPasswordVisible = !isPasswordVisible"
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="confirmPassword"
+                    label="Confirm Password"
+                    :rules="
+                      [v => !!v && password === confirmPassword || 'Password confirmation is required and passwords must match']
+                    "
+                    :append-inner-icon="isConfirmPasswordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                    :type="isConfirmPasswordVisible ? 'text' : 'password'"
+                    @click:append-inner="isConfirmPasswordVisible = !isConfirmPasswordVisible"
+                  ></v-text-field>
+                  <span class="text-caption text-grey-darken-1">
+                    Please enter a password for your account
+                  </span>
+                </v-card-text>
+              </v-form>
             </v-window-item>
             <v-window-item :value="EStep.success">
               <div class="pa-4 text-center">
@@ -130,8 +134,8 @@ const handleStepChange = (): void => {
           <v-divider></v-divider>
           <v-card-actions>
             <v-btn
-              v-if="step === EStep.password || step === EStep.success"
-              variant="text"
+              v-if="step === EStep.password"
+              variant="flat"
               :loading="isLoading"
               :disabled="isLoading"
               @click="step--"
@@ -141,7 +145,7 @@ const handleStepChange = (): void => {
             <v-spacer></v-spacer>
             <v-btn
               v-if="step == EStep.email || step === EStep.password"
-              color="primary"
+              color="purple-darken-3"
               variant="flat"
               :loading="isLoading"
               :disabled="isLoading"
