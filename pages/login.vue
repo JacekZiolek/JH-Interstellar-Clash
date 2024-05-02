@@ -31,13 +31,16 @@ const handleSignIn = async (authMethod: EAuthMethod): Promise<void> => {
       case EAuthMethod.emailAndPassword:
         if (form.value.isValid) {
           await signInWithEmailAndPassword(auth, email.value, password.value)
+          router.push({ name: 'index' })
         }
         break
       case EAuthMethod.popUp:
         await signInWithPopup(auth, googleAuthProvider)
+        router.push({ name: 'index' })
         break
       default:
         await signInAnonymously(auth)
+        router.push({ name: 'index' })
         break
     }
   } catch (error) {
@@ -47,7 +50,6 @@ const handleSignIn = async (authMethod: EAuthMethod): Promise<void> => {
     }
   } finally {
     isLoading.value = false
-    router.push({ name: 'index' })
   }
 }
 </script>

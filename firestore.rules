@@ -2,7 +2,7 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/jh-interstellar-clash/documents {
-  	// read-only collection
+    // read-only collection
     match /people/{person} {
       allow get;
       allow list;
