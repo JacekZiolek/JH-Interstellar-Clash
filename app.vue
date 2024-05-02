@@ -71,7 +71,8 @@ const auth = useFirebaseAuth()!
     <v-main class="app-container">
       <NuxtPage />
     </v-main>
-    <v-footer class="d-flex justify-center align-items-center pa-0" app>
+    <!-- HACK: fixes hydration mismatch for v-footer -->
+    <v-footer style="z-index: 1006;" class="d-flex justify-center align-items-center pa-0" app>
       <p class="text-no-wrap mr-4">
         {{ getCurrentYear }} — <strong>Jack Herby</strong>
       </p>
