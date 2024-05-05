@@ -2,7 +2,7 @@
 import { useDisplay } from 'vuetify'
 import { collection, query } from 'firebase/firestore'
 import type { ICard } from '@/interfaces/ICard'
-import { EGameMode } from '~/enums/EGameMode'
+import { EGameMode } from '@/enums/EGameMode'
 
 const { smAndDown } = useDisplay()
 
@@ -18,10 +18,12 @@ const deckType = useDeckType()
 const gameMode = useGameMode()
 const isGameRunning = useGameRunning()
 
-const isActive = ref(false)
 const hasPlayerOneWon = ref(false)
 const playerOneScore = ref(0)
 const playerTwoScore = ref(0)
+
+const isActive = ref(false)
+const showScore = ref(false)
 
 let playerOneCard = reactive<ICard>({
   name: '',
@@ -64,6 +66,7 @@ const playGame = (deck: ICard[] | undefined): void => {
   if (!deck) {
     return
   }
+  isActive.value = true
   const shuffledDeck = shuffleDeck(deck)
   playerOneCard = shuffledDeck[0]
   playerTwoCard = shuffledDeck[1]
@@ -71,8 +74,14 @@ const playGame = (deck: ICard[] | undefined): void => {
   hasPlayerOneWon.value === true ? playerOneScore.value++ : playerTwoScore.value++
 }
 
-const quitGame = () => {
+const replay = () => {
   isActive.value = false
+  showScore.value = false
+}
+
+const goToMainMenu = () => {
+  isActive.value = false
+  showScore.value = false
   playerOneScore.value = 0
   playerTwoScore.value = 0
   playerOne.value = ''
@@ -89,7 +98,8 @@ onMounted(() => {
 
 <template>
   <div>
-    <h4 class="text-h4 mb-6">Player vs. Computer</h4>
+    <h4 v-if="gameMode === EGameMode.onePlayer" class="text-h4 mb-6">Player vs. Computer</h4>
+    <h4 v-else class="text-h4 mb-6">Player vs. Player</h4>
     <v-row>
       <v-col>
         <p class="text-h6 text-center mb-4">Choose deck type:</p>
@@ -102,42 +112,73 @@ onMounted(() => {
     </v-row>
     <v-row :class="{ 'flex-column': smAndDown }">
       <v-col>
-        <v-dialog max-width="800">
-          <template #activator="{ props: activatorProps }">
+        <v-dialog v-model="isActive" max-width="800">
+          <template #activator>
             <v-btn
-              v-bind="activatorProps"
               color="surface-variant"
               text="Start Game!"
               variant="flat"
               @click="playGame(getDeck)"
             ></v-btn>
+            <v-btn
+              class="ma-2"
+              text="Main menu"
+              color="surface-variant"
+              variant="flat"
+              @click="goToMainMenu"
+            ></v-btn>
           </template>
-          <template #default="{ isActive }">
+          <template #default>
             <v-row>
               <v-col>
                 <v-card>
-                  <v-card-title class="text-center">{{ playerOne }} vs. {{ playerTwo }}</v-card-title>
+                  <v-card-title class="text-center text-h4">{{ playerOne }} vs. {{ playerTwo }}</v-card-title>
                   <div v-if="gameMode === EGameMode.twoPlayers" class="text-center">
-                    <v-card-subtitle>Score:</v-card-subtitle>
-                    <v-card-text>{{ playerOneScore }} : {{ playerTwoScore }}</v-card-text>
+                    <div v-if="showScore">
+                      <v-card-subtitle>Score:</v-card-subtitle>
+                      <v-card-text>{{ playerOneScore }} : {{ playerTwoScore }}</v-card-text>
+                    </div>
+                    <v-skeleton-loader
+                      v-else
+                      type="list-item-two-line"
+                      color="grey-darken-3"
+                      boilerplate
+                    >
+                    </v-skeleton-loader>
                   </div>
-                  <v-card-text class="text-center text-h4 pa-2">
+                  <v-card-text v-if="showScore" class="text-center text-h4 pa-2">
                     {{ hasPlayerOneWon ? playerOne : playerTwo }} has won!
                   </v-card-text>
+                  <v-skeleton-loader
+                    v-else
+                    type="list-item-two-line"
+                    color="grey-darken-3"
+                    boilerplate
+                  >
+                  </v-skeleton-loader>
                   <v-card-actions class="justify-center">
+                    <v-btn
+                      class="ma-2"
+                      text="Show score"
+                      color="surface-variant"
+                      variant="flat"
+                      :disabled="showScore"
+                      @click="showScore = true"
+                    ></v-btn>
                     <v-btn
                       class="ma-2"
                       text="Play Again"
                       color="surface-variant"
                       variant="flat"
-                      @click="isActive.value = false"
+                      :disabled="!showScore"
+                      @click="replay"
                     ></v-btn>
                     <v-btn
                       class="ma-2"
-                      text="Quit Game"
+                      text="Main menu"
                       color="surface-variant"
                       variant="flat"
-                      @click="quitGame"
+                      @click="goToMainMenu"
                     ></v-btn>
                   </v-card-actions>
                 </v-card>
@@ -145,25 +186,43 @@ onMounted(() => {
             </v-row>
             <v-row>
               <v-col>
-                <v-card height="600">
+                <v-card class="position-relative" height="550">
                   <v-img src="../public/battle.jpg" height="200" cover></v-img>
-                  <v-card-title>Name: {{ playerOneCard.name }}</v-card-title>
-                  <v-card-text>Description: {{ playerOneCard.description }}</v-card-text>
-                  <v-card-text>Weapon: {{ playerOneCard.weapon }}</v-card-text>
-                  <v-card-text class="text-h6">
-                    Resource: {{ playerOneCard.resource.type }} - {{ playerOneCard.resource.value }}
-                  </v-card-text>
+                  <div v-if="showScore">
+                    <v-card-title class="mb-2">Name: {{ playerOneCard.name }}</v-card-title>
+                    <v-card-text>Description: {{ playerOneCard.description }}</v-card-text>
+                    <v-card-text class="mb-2">Weapon: {{ playerOneCard.weapon }}</v-card-text>
+                    <v-card-text class="text-h6">
+                      Resource: {{ playerOneCard.resource.type }} - {{ playerOneCard.resource.value }}
+                    </v-card-text>
+                  </div>
+                  <v-skeleton-loader
+                    v-else
+                    type="paragraph, paragraph, paragraph"
+                    color="grey-darken-3"
+                    boilerplate
+                  >
+                  </v-skeleton-loader>
                 </v-card>
               </v-col>
               <v-col>
-                <v-card height="600">
+                <v-card height="550">
                   <v-img src="../public/battle.jpg" height="200" cover></v-img>
-                  <v-card-title>Name: {{ playerTwoCard.name }}</v-card-title>
-                  <v-card-text>Description: {{ playerTwoCard.description }}</v-card-text>
-                  <v-card-text>Weapon: {{ playerTwoCard.weapon }}</v-card-text>
-                  <v-card-text class="text-h6">
-                    Resource: {{ playerTwoCard.resource.type }} - {{ playerTwoCard.resource.value }}
-                  </v-card-text>
+                  <div v-if="showScore">
+                    <v-card-title class="mb-2">Name: {{ playerTwoCard.name }}</v-card-title>
+                    <v-card-text>Description: {{ playerTwoCard.description }}</v-card-text>
+                    <v-card-text class="mb-2">Weapon: {{ playerTwoCard.weapon }}</v-card-text>
+                    <v-card-text class="text-h6">
+                      Resource: {{ playerTwoCard.resource.type }} - {{ playerTwoCard.resource.value }}
+                    </v-card-text>
+                  </div>
+                  <v-skeleton-loader
+                    v-else
+                    type="paragraph, paragraph, paragraph"
+                    color="grey-darken-3"
+                    boilerplate
+                  >
+                  </v-skeleton-loader>
                 </v-card>
               </v-col>
             </v-row>
