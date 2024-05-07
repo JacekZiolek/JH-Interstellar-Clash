@@ -1,12 +1,23 @@
 <script lang="ts" setup>
 import { useDisplay } from 'vuetify'
-import { collection, query } from 'firebase/firestore'
-import type { ICard } from '@/interfaces/ICard'
+import {
+  collection,
+  query,
+  addDoc,
+  updateDoc,
+  where,
+  doc,
+  arrayUnion,
+  getDocs,
+} from 'firebase/firestore'
 import { EGameMode } from '@/enums/EGameMode'
+import type { ICard } from '@/interfaces/ICard'
+import type { IHighScores, IGame } from '@/interfaces/IHighScores'
 
 const { smAndDown } = useDisplay()
 
 const db = useFirestore()
+
 const peopleRef = collection(db, 'people')
 const starshipsRef = collection(db, 'starships')
 const peopleDeck = useCollection<ICard>(query(peopleRef))
@@ -62,6 +73,33 @@ const shuffleDeck = (deckToShuffle: ICard[]): ICard[] => {
   return deckToShuffle
 }
 
+const saveUserScore = async (): Promise<void> => {
+  const user = useCurrentUser()
+  if (!user.value) {
+    return
+  }
+
+  const userId = user.value.uid
+  const game: IGame = {
+    vs: playerTwo.value,
+    userScore: playerOneScore.value,
+    oponentScore: playerTwoScore.value,
+  }
+  const highScores: IHighScores = { userId, games: arrayUnion(game) as unknown as IGame[] }
+
+  const userHighScoresRef = collection(db, 'highScores')
+  const userHighScoresQuery = query(userHighScoresRef, where('userId', '==', user.value?.uid))
+  const userHighScoresQuerySnapshot = await getDocs(userHighScoresQuery)
+
+  if (userHighScoresQuerySnapshot.empty) {
+    addDoc(userHighScoresRef, highScores)
+  } else {
+    const userHighScoresId = userHighScoresQuerySnapshot.docs[0].id
+    const docToUpdate = doc(db, 'highScores', userHighScoresId)
+    updateDoc(docToUpdate, { games: arrayUnion(game) })
+  }
+}
+
 const playGame = (deck: ICard[] | undefined): void => {
   if (!deck) {
     return
@@ -80,6 +118,7 @@ const replay = () => {
 }
 
 const goToMainMenu = () => {
+  saveUserScore()
   isActive.value = false
   showScore.value = false
   playerOneScore.value = 0
