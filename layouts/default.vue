@@ -75,8 +75,8 @@ const auth = useFirebaseAuth()!
       <v-container class="fill-height">
         <v-row>
           <v-spacer v-show="smAndUp"></v-spacer>
-          <v-col :cols="smAndUp? 10 : 12">
-            <v-card class="text-center px-4 py-8" variant="tonal" color="amber-darken-3">
+          <v-col :cols="smAndUp? 10 : 12"
+            <v-card class="text-center px-2 py-4" variant="tonal" color="amber-darken-3">
               <slot />
             </v-card>
           </v-col>

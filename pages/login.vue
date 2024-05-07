@@ -55,7 +55,7 @@ const handleSignIn = async (authMethod: EAuthMethod): Promise<void> => {
 </script>
 
 <template>
-  <v-form ref="form" class="w-75 mx-auto">
+  <v-form class="w-75 mx-auto" ref="form">
     <h4 class="text-h4 text-center">Log In</h4>
     <div class="text-subtitle-1 text-medium-emphasis">Username</div>
     <v-text-field
