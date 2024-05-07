@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     'nuxt-vuefire',
     '@nuxt/test-utils/module',
+    '@vueuse/nuxt',
   ],
   nitro: {
     firebase: {
