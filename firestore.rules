@@ -18,5 +18,12 @@ service cloud.firestore {
       allow update: if false;
       allow delete: if false;
     }
+    match /highScores/{user} {
+      allow get;
+      allow list;
+      allow create;
+      allow update;
+      allow delete: if false;
+    }
   }
 }
